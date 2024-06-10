@@ -31,33 +31,44 @@ covid_patients <- covid_patients %>%
 covid_encounters <- covid_patients %>%
   inner_join(encounters %>% select(PATIENT, ENCOUNTERCLASS), by = "PATIENT")
 
-# Calculate hospitalization rates by age and county
-hospitalization_rate <- covid_encounters %>%
+# Calculate hospitalisation rates by age and county
+hospitalisation_rate <- covid_encounters %>%
   filter(ENCOUNTERCLASS %in% c("ambulatory", "emergency", "inpatient", "urgent care")) %>%
   group_by(AGE, COUNTY) %>%
   summarise(count = n()) %>%
   ungroup()
 
 # Create heatmap
-ggplot(hospitalization_rate, aes(x = AGE, y = COUNTY, fill = count)) +
+ggplot(hospitalisation_rate, aes(x = AGE, y = COUNTY, fill = count)) +
   geom_tile() +
-  labs(title = "Hospitalization Rate by Age and County for COVID-19 Patients", x = "Age", y = "County") +
-  scale_fill_gradient(low ="white", high = "black") +
+  labs(title = "Hospitalisation Rate by Age and County for COVID-19 Patients", x = "Age", y = "County") +
+  scale_fill_gradient(low ="white", high = "red") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-# Visualize the trends by age
-ggplot(hospitalization_rate, aes(x = AGE, y = count)) +
+# Visualise the trends by age
+ggplot(hospitalisation_rate, aes(x = AGE, y = count)) +
   geom_line() +
-  labs(title = "Hospitalization Rate by Age for COVID-19 Patients", x = "Age", y = "Count of Hospitalizations") +
+  labs(title = "Hospitalisation Rate by Age for COVID-19 Patients", x = "Age", y = "Count of Hospitalisations") +
   theme_minimal()
 
-# Visualize the trends by county
-ggplot(hospitalization_rate, aes(x = COUNTY, y = count, fill = COUNTY)) +
+# Visualise the trends by county
+ggplot(hospitalisation_rate, aes(x = COUNTY, y = count, fill = COUNTY)) +
   geom_bar(stat = "identity") +
-  labs(title = "Hospitalization Rate by County for COVID-19 Patients", x = "County", y = "Count of Hospitalizations") +
+  labs(title = "Hospitalisation Rate by County for COVID-19 Patients", x = "County", y = "Count of Hospitalisations") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
+# Perform a regression analysis to understand the impact of age and county on hospitalisation rates
+model <- lm(count ~ AGE + COUNTY, data = hospitalisation_rate)
 
-# Elaborate on the findings
+# Summary of the regression model
+summary(model)
+
+# Include an interaction term between age and county
+model_interaction <- lm(count ~ AGE * COUNTY, data = hospitalisation_rate)
+
+# Summary of the regression model with interaction
+summary(model_interaction)
+
+

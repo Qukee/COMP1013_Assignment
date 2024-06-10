@@ -50,7 +50,7 @@ symptoms_analysis <- covid_encounters %>%
   summarise(count = n()) %>%
   ungroup()
 
-# Visualize demographics impact on recovery outcome
+# Visualise demographics impact on recovery outcome
 ggplot(demographics_analysis, aes(x = AGE, y = count, fill = RECOVERY_STATUS)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(title = "Impact of Age on COVID-19 Recovery", x = "Age", y = "Count") +
@@ -67,11 +67,15 @@ ggplot(demographics_analysis, aes(x = COUNTY, y = count, fill = RECOVERY_STATUS)
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-# Visualize symptoms impact on recovery outcome
-ggplot(symptoms_analysis, aes(x = reorder(REASONDESCRIPTION, count), y = count, fill = RECOVERY_STATUS)) +
+# Identify the top 15 symptoms
+top_15_symptoms <- symptoms_analysis %>%
+  arrange(desc(count)) %>%
+  head(15)
+
+# Visualise symptoms impact on recovery outcome for the top 15 symptoms
+ggplot(top_15_symptoms, aes(x = reorder(REASONDESCRIPTION, count), y = count, fill = RECOVERY_STATUS)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Impact of Symptoms on COVID-19 Recovery", x = "Symptom", y = "Count") +
+  labs(title = "Impact of Symptoms on COVID-19 Recovery (Top 15 Symptoms)", x = "Symptom", y = "Count") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-# Elaborate on the findings

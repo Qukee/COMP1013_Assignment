@@ -43,17 +43,17 @@ covid_patients <- covid_patients %>%
            age > 50 ~ "51+"
          ))
 
-# Analyze the top 10 most common conditions
+# Analyse the top 10 most common conditions
 top_conditions <- covid_patients %>%
   count(DESCRIPTION) %>%
   arrange(desc(n)) %>%
   top_n(10, n)
 
-# Analyze the distribution of COVID patients across age groups
+# Analyse the distribution of COVID patients across age groups
 covid_age_distribution <- covid_patients %>%
   count(age_group)
 
-# Analyze the distribution of COVID patients across counties
+# Analyse the distribution of COVID patients across counties
 covid_county_distribution <- covid_patients %>%
   count(COUNTY)
 
